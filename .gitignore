@@ -54,3 +54,6 @@ Hao_Test/build/scrap_sina_news/warn-scrap_sina_news.txt
 Hao_Test/build/scrap_sina_news/xref-scrap_sina_news.html
 Hao_Test/dist/scrap_sina_news.exe
 Hao_Test/geckodriver.log
+Hao_Test/word/__pycache__/about_word.cpython-37.pyc
+Hao_Test/word/__pycache__/__init__.cpython-37.pyc
+test/test_pandas_mysql.py

@@ -8,6 +8,9 @@ import pandas as pd
 import jieba
 import numpy as np
 from math import ceil, log
+from python_scraping.Hao_Test.tools.sql import create_mysql_engine
+from sqlalchemy import Table, MetaData, Column, Integer, Float, ForeignKey, schema
+from sqlalchemy.orm import relationship
 
 def get_useful_word():
     """http://thuocl.thunlp.org/sendMessage 清华大学开放中文词库
@@ -112,7 +115,6 @@ def calculate_list_idf(matrix_tf):
     print("---> 获取idf向量")
     nb_row, nb_column = np.shape(matrix_tf)
     list_idf = [0] * nb_column
-    print(nb_row)
     for current_column in range(nb_column):
         row_has_data = 0
         for current_row in range(nb_row):
@@ -144,3 +146,53 @@ def calculate_matrix_tf_idf(matrix_tf, list_idf):
                 current_column]
     return matrix_tf_idf
 
+def calculate_matrix_distance(matrix_tf_idf):
+    """
+    :param matrix_tf_idf:
+    :return:从tf-idf矩阵出发计算两两文档之间的相似性
+    """
+    nb_row, nb_column = np.shape(matrix_tf_idf)
+
+    list_object_first = list([])
+    list_object_second = list([])
+    list_distance = list([])
+
+    for first_object in range(nb_row):
+        for second_object in range(first_object + 1, nb_row, 1):
+            distance = 0
+            for current_column in range(nb_column):
+                distance = distance + pow(
+                    matrix_tf_idf[first_object, current_column] - matrix_tf_idf[second_object, current_column], 2)
+            distance = np.sqrt(distance)
+            list_object_first.append(first_object+1)
+            list_object_second.append(second_object+1)
+            list_distance.append(round(distance, 4))
+            print("%d ---> %d ---> %f" % (first_object, second_object, distance))
+    result = pd.DataFrame(
+        {'source': list_object_first, 'target': list_object_second, 'distance': list_distance})
+    my_engine = create_mysql_engine("web_crawler")
+    init_similarity_table(my_engine)
+    result.to_sql(name='news_similarity', con=my_engine, index=False, if_exists='append')
+    my_engine.dispose()
+    return result
+
+
+def init_similarity_table(my_engine):
+    """
+    :param my_engine:
+    :return: 初始化存放文章相似性的数据表
+    """
+    print("---> 初始化表news_similarity")
+    metadata = MetaData(my_engine)
+    news = Table('news', metadata, Column('id', Integer, primary_key=True, autoincrement=True))
+    if news.exists():
+        news_similarity = Table('news_similarity', metadata,
+                                Column('id', Integer, primary_key=True, autoincrement=True, comment='主键'),
+                                Column('source', Integer, ForeignKey("news.id"), comment='第一个新闻', nullable=False),
+                                Column('target', Integer, ForeignKey('news.id'), comment='第二个新闻', nullable=False),
+                                Column('distance', Float, comment='欧式距离', nullable=False),
+                                schema='web_crawler')
+        if news_similarity.exists():
+            news_similarity.drop()
+            # news_similarity.delete().execute()
+        news_similarity.create()

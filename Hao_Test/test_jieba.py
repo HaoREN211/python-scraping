@@ -19,21 +19,10 @@ matrix_tf_idf = pd.read_csv(r'C:\Data\matrix_tf_idf.csv', header=0)
 matrix_tf_idf = matrix_tf_idf.values
 nb_row, nb_column = np.shape(matrix_tf_idf)
 
-list_object_first = list([])
-list_object_second = list([])
-list_distance = list([])
 
-for first_object in range(nb_row):
-    for second_object in range(first_object+1, nb_row, 1):
-        distance = 0
-        for current_column in range(nb_column):
-            distance = distance + pow(matrix_tf_idf[first_object, current_column]-matrix_tf_idf[second_object, current_column], 2)
-        distance = np.sqrt(distance)
-        list_object_first.append(first_object)
-        list_object_second.append(second_object)
-        list_distance.append(distance)
-result = pd.DataFrame({'first_object': list_object_first, 'second_object': list_object_second, 'distance': list_distance})
-print(result)
+
+
+
 
 
 # 建立数据库连接 获取新闻的标题数据
