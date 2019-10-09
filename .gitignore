@@ -57,3 +57,6 @@ Hao_Test/geckodriver.log
 Hao_Test/word/__pycache__/about_word.cpython-37.pyc
 Hao_Test/word/__pycache__/__init__.cpython-37.pyc
 test/test_pandas_mysql.py
+Hao_Test/tools/__pycache__/ellipse.cpython-37.pyc
+Hao_Test/scrap/__pycache__/liepin.cpython-37.pyc
+test/test_import.py

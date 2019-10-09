@@ -249,7 +249,7 @@ def get_liepin_table_script(mysql_engine):
                  Column("experience", String(20), comment='工作年限'),
                  Column("language", String(20), comment='语言要求'),
                  Column("age", String(20), comment='年龄要求'),
-                 Column("link", String(20), comment='网站链接'),
+                 Column("link", String(200), comment='网站链接'),
                  Column("execute_time", String(20), comment='执行时间'), schema='web_crawler')
 
 def get_all_liepin_info():
@@ -261,8 +261,6 @@ def get_all_liepin_info():
     my_engine = create_mysql_engine("web_crawler")
     init_liepin_table(my_engine)
 
-    # list_column = ["title",  "origin",  "company",  "salary_min",  "salary_max",  "salary_unit",  "city",  "district",  "degree",  "experience",  "language",  "age",  "link",  "execute_time"]
-    # liepins = DataFrame(columns=list_column)
     jobs = get_liepin_table_script(my_engine)
     # 逐条读取岗位的信息
     for current_job_link in list_job_link:
@@ -273,9 +271,5 @@ def get_all_liepin_info():
         print("---> 正在爬取%s" % current_job_link)
         current_dataset = get_liepin_job_info(current_job_link)
         current_dataset.to_sql(name="jobs", con=my_engine, index=False, if_exists="append")
-        # liepins = liepins.append(get_liepin_job_info(current_job_link), ignore_index=True)
         sleep(15)
-    # 将爬取下来的数据存放到数据库中
-    # if not liepins.empty:
-    #     liepins.to_sql(name="jobs", con=my_engine, index=False, if_exists="append")
     my_engine.dispose()
