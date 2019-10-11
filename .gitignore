@@ -60,3 +60,7 @@ test/test_pandas_mysql.py
 Hao_Test/tools/__pycache__/ellipse.cpython-37.pyc
 Hao_Test/scrap/__pycache__/liepin.cpython-37.pyc
 test/test_import.py
+Hao_Test/func/__pycache__/__init__.cpython-37.pyc
+Hao_Test/func/__pycache__/date.cpython-37.pyc
+Hao_Test/tools/__pycache__/baidu_class.cpython-37.pyc
+test/value_count.py

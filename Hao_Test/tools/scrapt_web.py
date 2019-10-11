@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import string
 import re
 from pandas import DataFrame
-from sqlalchemy import Table, Column, schema, MetaData, BigInteger, String
+from sqlalchemy import Table, Column, MetaData, BigInteger, String
 from time import localtime, strftime
 from python_scraping.Hao_Test.tools.sql import create_mysql_engine
 from time import sleep
@@ -21,10 +21,10 @@ def get_web_content(url):
     # url中包含中文，需要进行转换
     current_page = quote(url, safe=string.printable)
     html = urlopen(current_page)
-    if html.headers.get_content_charset() is None:
-        bs = BeautifulSoup(html.read().decode(html.headers.get_content_charset(), 'ignore'), 'html.parser')
-    else:
-        bs = BeautifulSoup(html.read(), 'html.parser')
+    # if html.headers.get_content_charset() is None:
+    #     bs = BeautifulSoup(html.read().decode(html.headers.get_content_charset(), 'ignore'), 'html.parser')
+    # else:
+    bs = BeautifulSoup(html.read(), 'html.parser')
     return bs
 
 def get_web_content_item(web_content, target, condition, is_text = True, get_all= False):
