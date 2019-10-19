@@ -21,10 +21,11 @@ if __name__ == "__main__":
             .join(table_data_table, table_data_column.c.data_table_id==table_data_table.c.id)
             .join(table_data_base, table_data_column.c.data_base_id==table_data_base.c.id))
 
-    test = (session.query(table_data_base.c.name, table_data_column.c.name, table_data_column.c.name)
+    test = (session.query(table_data_base.c.name, table_data_table.c.name, table_data_column.c.name)
             .join(table_data_table, table_data_column.c.data_table_id==table_data_table.c.id)
             .join(table_data_base, table_data_column.c.data_base_id == table_data_base.c.id).all())
 
-    print(test)
+    for current_row in test:
+        print(".".join(current_row))
 
     my_engine.dispose()

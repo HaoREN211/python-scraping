@@ -11,6 +11,7 @@ from sqlalchemy import MetaData, Table, BigInteger, String, Column, Text, Foreig
     TIMESTAMP, and_
 from pandas import read_excel
 from time import strftime, localtime
+from numpy import shape
 
 # 创建hao_data_base_structure数据库
 def create_data_base_engine():
@@ -173,7 +174,7 @@ def insert_user_bt_cash_ovd_info():
 
 # 插入各业务先贷款字段数据
 def insert_user_loan_ovd_base_info():
-    file_path = r'C:\Users\hao.ren3\Desktop\逾期表字段汇总.xlsx'
+    file_path = r'C:\Users\hao.ren3\Desktop\文档\数据\逾期表字段汇总.xlsx'
     data = read_excel(file_path, header=0, sheet_name=1)
     insert_into_data_base(data)
 
@@ -189,6 +190,27 @@ def insert_into_data_base(inside_data):
                          inside_data.position.values,
                          inside_data.description.values)
 
+def insert_other_data():
+    file_path = r'C:\Users\hao.ren3\Desktop\文档\数据\字段汇总.xlsx'
+    for i in range(23):
+        data = read_excel(file_path, header=0, sheet_name=i)
+        nb_row, nb_column = shape(data)
+        print("%s ---> %s, %s" % (str(i), str(nb_row), str(nb_column)))
+        insert_into_data_base(data)
+
+def insert_cumulative_attribute():
+    file_path = r'C:\Users\hao.ren3\Desktop\文档\数据\attribut.xlsx'
+    current_sheet = 0
+    while True:
+        try:
+            data = read_excel(file_path, header=0, sheet_name=current_sheet)
+            current_sheet = current_sheet + 1
+            nb_row, nb_column = shape(data)
+            # print("%s ---> %s, %s" % (str(current_sheet), str(nb_row), str(nb_column)))
+            insert_into_data_base(data)
+        except IndexError:
+            # print("finished")
+            break
 
 if __name__ == "__main__":
     my_engine = create_data_base_engine()
@@ -196,6 +218,9 @@ if __name__ == "__main__":
     table_data_base = init_data_base_table(mysql_meta_data=my_meta_data)
     table_data_table = init_data_table_table(mysql_meta_data=my_meta_data)
     table_data_column = init_data_column_table(mysql_meta_data=my_meta_data)
-    insert_umd_user_base_info_s_d()
+    # insert_umd_user_base_info_s_d()
     # insert_user_loan_ovd_base_info()
+    # insert_other_data()
+    # delete_all_table(mysql_meta_data=my_meta_data)
+    insert_cumulative_attribute()
     my_engine.dispose()
